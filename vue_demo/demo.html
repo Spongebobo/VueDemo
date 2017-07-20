@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Document</title>
+	<script src="js/vue.js"></script>
+	<style>
+		.isActive{background: #f99;width: 100px;height: 100px;}
+		.hasError{border: 3px solid #000;}
+		.fade-enter-active, .fade-leave{
+			transition: :all 0.5s ease-out;
+		}
+		.fade-enter, .fade-leave-active{
+			opacity: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="app">
+	  {{init()}}
+	  my name is {{ name }},im {{age}} years old and im a {{sex}};<br>
+	  <span v-once>我只渲染一次 im {{age}} years old</span><br>
+	  <input type="text" v-model="age"><br>
+	  <a v-bind:href="url">百度</a>
+	  <div v-html="rawHtml"></div>
+	  <div>
+	  	<button v-on:click="trans(5)">toggle</button><br>
+	  	<span >{{seen}}</span><br>
+	  	<button v-on:click="trans2()">toggle</button><br>
+	  	<transition name="fade">
+	  		<span v-show="seen2" style="font-size: 20px;">点我消失11</span>
+	  	</transition>
+	  	<!-- <span v-show="seen2">消失</span><br> -->
+	  </div> 
+		<div v-bind:class="{isActive:isActive,hasError:hasError}">
+		</div>
+		<div v-bind:class="classObject" style="margin-top: 10px;"></div>
+		<div v-bind:class="{isActive:uid>99}" style="margin-top: 10px;"></div>
+		<div v-bind:style="{color:color,fontSize:fontSize+'px'}">我会改变字体大小和颜色</div>
+		<input type="number" v-model.number="number" placeholder="手机号">
+		<input type="text" v-model.trim="password" placeholder="密码">
+		<button @click="show">点我</button>
+	</div>
+	<div id="app2">
+		<ul>
+			<li v-for="(item,index) in items">{{item.a}}-----------当前遍历items的index值为{{index}}</li>
+		</ul>
+		<input type="text" placeholder="请输入要增加的字段" v-model="input.title" v-on:blur="add">
+		<input type="text" placeholder="请输入要监听的字段" v-model="aaa">
+		<input type="text" placeholder="请输入要监听的字段" v-model="nextInput.value">
+		<ol>
+			<template>
+				<li v-for="(vo,index) in list" v-on:click="clickMe(index)">
+					<p>我的id是{{vo.id}}</p>
+					<h3>{{vo.title}}</h3>
+				</li>
+			</template>	
+		</ol>
+	</div>
+	<script>
+		var app=new Vue({
+			el:'#app',
+			data:{
+				name:'abc',
+				age:11,
+				sex:'man',
+				rawHtml:'<a href="http://www.baidu.com">百度</a>',
+				seen:true,
+				seen2:true,
+				url:'http://www.baidu.com',
+				isActive:true,
+				hasError:true,
+				uid:100,
+				classObject:{
+					isActive:true,
+					hasError:true,
+				},
+				color:'blue',
+				fontSize:15,
+				number:'',
+				password:''
+			},
+			methods:{
+				init:function(){
+					console.log('我正在初始化');
+				},
+				trans:function(event){
+					console.log(event);
+					this.seen=!this.seen;
+				},
+				trans2:function(){
+					this.seen2=!this.seen2;
+				},
+				show:function(ev){
+					alert(ev.clientX);
+				}
+			}
+		});
+		var vm=new Vue({
+			el:'#app2',
+			data:{
+				items:[{'a':'zhangsan'},{'a':'lisi'},{'a':'wangwu'}],
+				list:[
+				{
+					"id":"26",
+					"title":'前段工程师很棒0',
+				},
+				{
+					"id":"27",
+					"title":'前段工程师很棒1',
+				},
+				{
+					"id":"28",
+					"title":'前段工程师很棒2',
+				}],
+				input:{
+					'id':'10',
+					"title":""
+				},
+				nextInput:{
+					value:''
+				},
+				aaa:''
+			},
+			methods:{
+				clickMe:function(index){
+					console.log(index);
+					console.log(JSON.stringify(vm.list[index]));
+					console.log(this.list);
+				},
+				add:function(){
+					vm.list.push(this.input);
+				}
+			},
+			watch:{
+				aaa:{
+					handler:function(val,oldVal){
+						console.log(val);
+						console.log(oldVal);
+					},
+					deep:true
+				},
+				nextInput:{
+					handler:function(val,oldVal){
+						console.log(val);
+						console.log(oldVal);
+						//console.log(vm.nextInput.value.length);
+						if(vm.nextInput.value.length<5){
+							console.log('新的值: '+val.value);
+							console.log('老值: '+oldVal.value);
+						}
+						if(vm.nextInput.value.length>8){
+							console.log('太长了');
+						}
+					},
+					deep:true
+				}
+			}
+		})
+	</script>
+</body>
+</html>

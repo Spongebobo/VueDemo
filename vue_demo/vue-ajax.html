@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <script src="js/vue.js"></script>
+    <script src="js/vue-resource.js"></script>
+    <script>
+        window.onload=function(){
+            new Vue({
+                el:'#app',
+                data:{
+                    list:[],
+                    num:0
+                },
+                methods:{
+                    get:function(){
+                        this.$http.get('js/data.json').then(function(res){
+                            /*console.log(res.data.myData[0].t);*/
+                            if(this.num<=res.data.myData.length){
+                                this.list.push(res.data.myData[this.num]);
+                                this.num++;
+                            }
+                             if(this.num>res.data.myData.length){
+                                alert('没有更多数据了。');
+                             }
+                        },function(res){
+                            alert('交互失败');
+                        });
+                    }
+                }
+            });
+        };
+    </script>
+</head>
+<body>
+    <div id="app">
+         <input type="button" value="按钮" @click="get()">
+         <ol>
+             <li v-for="item in list">
+                 {{item.t}}
+             </li>
+         </ol>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
